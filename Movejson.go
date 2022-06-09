@@ -42,7 +42,7 @@ func Movejson(jsonstr []byte, dstpath string, sourecepath string) (string, error
 	}
 	return jObj.String(), nil
 }
-func MapingAndSplit(jsonstr []byte, srcpath string, dstpath map[string]string, mapping map[string]string) (string, error) {
+func MapingAndSplit(jsonstr []byte, srcpath string, dstpath map[string]string, mapping map[string]map[string]string) (string, error) {
 	count := strings.Count(srcpath, "#")
 	if count > 1 {
 		str := fmt.Sprintf("\"srcpath must only on # or *,but dstpath is %d\"", count)
@@ -66,7 +66,7 @@ func MapingAndSplit(jsonstr []byte, srcpath string, dstpath map[string]string, m
 				if !ok {
 					return "", errors.New("mapping is null")
 				}
-				jObj.SetP(values, path)
+				jObj.SetP(values[key], path)
 			}
 		} else {
 			v := jObj.Path(srcpath).Data()
@@ -74,7 +74,7 @@ func MapingAndSplit(jsonstr []byte, srcpath string, dstpath map[string]string, m
 			if !ok {
 				return "", errors.New("mapping is null")
 			}
-			jObj.SetP(values, value)
+			jObj.SetP(values[key], value)
 		}
 	}
 	return jObj.String(), nil
