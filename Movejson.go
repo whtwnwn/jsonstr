@@ -9,12 +9,12 @@ import (
 )
 
 func Movejson(jsonstr []byte, dstpath string, sourecepath string) (string, error) {
-	count := strings.Count(dstpath, "#")
-	if count > 1 {
-		str := fmt.Sprintf("\"dstpath must only on # or *,but dstpath is %d\"", count)
+	dstcount := strings.Count(dstpath, "#")
+	if dstcount > 1 {
+		str := fmt.Sprintf("\"dstpath must only on # or *,but dstpath is %d\"", dstcount)
 		return "", errors.New(str)
 	}
-	count = strings.Count(sourecepath, "#")
+	count := strings.Count(sourecepath, "#")
 	if count > 1 {
 		str := fmt.Sprintf("\"sourecepath must only on # or *,but sourecepath is %d\"", count)
 		return "", errors.New(str)
@@ -29,7 +29,7 @@ func Movejson(jsonstr []byte, dstpath string, sourecepath string) (string, error
 	if err != nil {
 		return "", err
 	}
-	if count == 1 {
+	if dstcount == 1 {
 		for k, v := range jObj.Path(sourecepath).Children() {
 			ks := strconv.Itoa(k)
 			path := strings.Replace(dstpath, "*", ks, 1)
@@ -107,5 +107,18 @@ func Mapping(jsonstr []byte, srcpath string, mapping map[string]string) (string,
 		}
 		jObj.SetP(values, srcpath)
 	}
+	return jObj.String(), nil
+}
+func Setjson(jsonstr []byte, srcpath string, res string) (string, error) {
+	count := strings.Count(srcpath, "#")
+	if count > 0 {
+		str := fmt.Sprintf("\"srcpath must  not have # or *,but dstpath is %d\"", count)
+		return "", errors.New(str)
+	}
+	jObj, err := gabs.ParseJSON(jsonstr)
+	if err != nil {
+		return "", err
+	}
+	jObj.SetP(res, srcpath)
 	return jObj.String(), nil
 }
