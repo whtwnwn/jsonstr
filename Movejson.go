@@ -107,4 +107,5 @@ func Mapping(jsonstr []byte, srcpath string, mapping map[string]string) (string,
 		}
 		jObj.SetP(values, srcpath)
 	}
+	return jObj.String(), nil
 }
